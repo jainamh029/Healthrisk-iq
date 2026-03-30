@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthRisk IQ — M&A Regulatory Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0d0f;
+  --bg2: #111518;
+  --bg3: #181d21;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8e6e0;
+  --text2: #8a8880;
+  --text3: #5a5855;
+  --accent: #c8f55a;
+  --accent2: #7ee8b8;
+  --danger: #ff6b5b;
+  --warn: #ffb347;
+  --info: #5bb8ff;
+  --purple: #b09fff;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Mono', monospace;
+  --font-serif: 'Instrument Serif', serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* TOP NAV */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-head);
+  font-size: 15px; font-weight: 700; letter-spacing: 0.02em;
+}
+.logo-mark {
+  width: 28px; height: 28px; background: var(--accent);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+}
+.logo-mark svg { width: 16px; height: 16px; }
+.nav-tabs { display: flex; gap: 2px; }
+.nav-tab {
+  padding: 6px 14px; border-radius: 6px; cursor: pointer;
+  font-family: var(--font-head); font-size: 12px; font-weight: 500;
+  color: var(--text2); border: none; background: transparent;
+  transition: all 0.15s; letter-spacing: 0.03em;
+}
+.nav-tab:hover { color: var(--text); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: rgba(200,245,90,0.08); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-badge {
+  font-size: 10px; padding: 3px 8px; border-radius: 20px;
+  background: rgba(200,245,90,0.1); color: var(--accent);
+  font-family: var(--font-head); font-weight: 600; letter-spacing: 0.05em;
+}
+
+/* MAIN LAYOUT */
+.main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* SECTION HEADERS */
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.section-title {
+  font-family: var(--font-head); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--text2);
+}
+.section-sub { font-size: 11px; color: var(--text3); }
+
+/* GRID HELPERS */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+
+/* CARDS */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.card-sm { padding: 14px 16px; border-radius: 10px; }
+
+/* METRIC CARDS */
+.metric-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 20px;
+}
+.metric-label {
+  font-size: 10px; font-family: var(--font-head); font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3);
+  margin-bottom: 8px;
+}
+.metric-value {
+  font-family: var(--font-head); font-size: 28px; font-weight: 700;
+  line-height: 1; margin-bottom: 6px;
+}
+.metric-delta {
+  font-size: 11px; color: var(--text2);
+}
+.metric-delta .up { color: var(--danger); }
+.metric-delta .down { color: var(--accent2); }
+
+/* RISK BADGE */
+.risk-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 10px; font-family: var(--font-head); font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.risk-critical { background: rgba(255,107,91,0.12); color: var(--danger); border: 1px solid rgba(255,107,91,0.2); }
+.risk-high { background: rgba(255,179,71,0.12); color: var(--warn); border: 1px solid rgba(255,179,71,0.2); }
+.risk-medium { background: rgba(91,184,255,0.12); color: var(--info); border: 1px solid rgba(91,184,255,0.2); }
+.risk-low { background: rgba(126,232,184,0.12); color: var(--accent2); border: 1px solid rgba(126,232,184,0.2); }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 8px; cursor: pointer;
+  font-family: var(--font-head); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.04em; border: none; transition: all 0.15s;
+}
+.btn-primary { background: var(--accent); color: #0a0d0f; }
+.btn-primary:hover { background: #d4f870; transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+.btn-ghost:hover { color: var(--text); background: var(--bg3); }
+.btn-danger { background: rgba(255,107,91,0.1); color: var(--danger); border: 1px solid rgba(255,107,91,0.2); }
+
+/* INPUTS */
+.input-group { margin-bottom: 16px; }
+.input-label {
+  display: block; margin-bottom: 6px;
+  font-size: 10px; font-family: var(--font-head); font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2);
+}
+.input, select.input, textarea.input {
+  width: 100%; padding: 10px 12px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 8px; color: var(--text); font-family: var(--font-body);
+  font-size: 13px; outline: none; transition: border 0.15s;
+  appearance: none;
+}
+.input:focus, select.input:focus { border-color: var(--accent); }
+select.input option { background: var(--bg3); }
+
+/* RANGE SLIDER */
+input[type=range] {
+  -webkit-appearance: none; width: 100%; height: 4px;
+  background: var(--border2); border-radius: 2px; outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  background: var(--accent); border-radius: 50%; cursor: pointer;
+  transition: transform 0.1s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+/* PROGRESS BAR */
+.prog-bar {
+  height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden;
+}
+.prog-fill {
+  height: 100%; border-radius: 3px; transition: width 0.4s ease;
+}
+
+/* SCORE RING */
+.score-ring-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.score-ring-label {
+  font-size: 10px; font-family: var(--font-head); font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3);
+}
+
+/* TABS inside page */
+.tab-group { display: flex; gap: 4px; margin-bottom: 24px; }
+.tab-btn {
+  padding: 7px 14px; border-radius: 8px; cursor: pointer;
+  font-family: var(--font-head); font-size: 11px; font-weight: 600;
+  color: var(--text2); border: 1px solid transparent; background: transparent;
+  transition: all 0.15s; letter-spacing: 0.04em;
+}
+.tab-btn:hover { color: var(--text); background: var(--bg3); }
+.tab-btn.active { color: var(--text); background: var(--bg3); border-color: var(--border2); }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* TABLE */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+  text-align: left; padding: 10px 12px;
+  font-size: 10px; font-family: var(--font-head); font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3);
+  border-bottom: 1px solid var(--border);
+}
+.tbl td {
+  padding: 12px 12px; font-size: 12px; color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,0.02); }
+.tbl .td-name { color: var(--text); font-weight: 500; font-family: var(--font-head); font-size: 12px; }
+
+/* TIMELINE */
+.timeline { position: relative; padding-left: 24px; }
+.timeline::before {
+  content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px;
+  width: 1px; background: var(--border);
+}
+.tl-item {
+  position: relative; margin-bottom: 20px;
+}
+.tl-dot {
+  position: absolute; left: -21px; top: 4px;
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--bg); background: var(--text3);
+}
+.tl-dot.critical { background: var(--danger); }
+.tl-dot.warn { background: var(--warn); }
+.tl-dot.ok { background: var(--accent2); }
+.tl-dot.neutral { background: var(--text3); }
+.tl-date { font-size: 10px; color: var(--text3); margin-bottom: 3px; font-family: var(--font-head); }
+.tl-event { font-size: 12px; color: var(--text); font-weight: 500; margin-bottom: 2px; }
+.tl-detail { font-size: 11px; color: var(--text2); line-height: 1.5; }
+
+/* SCORE SECTION */
+.score-dimension {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+}
+.score-dim-label { flex: 0 0 180px; font-size: 11px; color: var(--text2); }
+.score-dim-bar { flex: 1; }
+.score-dim-val {
+  flex: 0 0 30px; text-align: right;
+  font-size: 11px; font-family: var(--font-head); font-weight: 600;
+}
+
+/* CASE CARD */
+.case-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 20px; cursor: pointer;
+  transition: all 0.15s;
+}
+.case-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.case-card.selected { border-color: var(--accent); background: rgba(200,245,90,0.04); }
+.case-title { font-family: var(--font-head); font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.case-meta { font-size: 11px; color: var(--text3); margin-bottom: 10px; }
+
+/* GLOWING SCORE */
+.big-score {
+  font-family: var(--font-head); font-size: 64px; font-weight: 700;
+  line-height: 1; letter-spacing: -0.02em;
+}
+.big-score.critical { color: var(--danger); text-shadow: 0 0 40px rgba(255,107,91,0.3); }
+.big-score.high { color: var(--warn); text-shadow: 0 0 40px rgba(255,179,71,0.3); }
+.big-score.medium { color: var(--info); text-shadow: 0 0 40px rgba(91,184,255,0.3); }
+.big-score.low { color: var(--accent2); text-shadow: 0 0 40px rgba(126,232,184,0.3); }
+
+/* HERO STRIP */
+.hero-strip {
+  background: linear-gradient(135deg, rgba(200,245,90,0.06) 0%, rgba(126,232,184,0.04) 100%);
+  border: 1px solid rgba(200,245,90,0.12);
+  border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hero-title {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: 22px; color: var(--text); margin-bottom: 4px;
+}
+.hero-sub { font-size: 12px; color: var(--text2); }
+
+/* PILL */
+.pill {
+  display: inline-block; padding: 2px 8px; border-radius: 20px;
+  font-size: 10px; font-family: var(--font-head); font-weight: 600;
+}
+.pill-green { background: rgba(200,245,90,0.1); color: var(--accent); }
+.pill-gray { background: rgba(255,255,255,0.05); color: var(--text2); }
+
+/* TOOLTIP */
+.tooltip-wrap { position: relative; display: inline-block; }
+.tooltip-wrap:hover .tooltip-box { opacity: 1; pointer-events: auto; }
+.tooltip-box {
+  position: absolute; bottom: calc(100% + 6px); left: 50%;
+  transform: translateX(-50%);
+  background: #1e2428; border: 1px solid var(--border2);
+  border-radius: 8px; padding: 8px 12px; font-size: 11px;
+  color: var(--text); width: 200px; z-index: 200;
+  opacity: 0; pointer-events: none; transition: opacity 0.15s;
+  text-align: center; line-height: 1.5;
+}
+
+/* ANIMATE IN */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeUp 0.3s ease forwards; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .grid4 { grid-template-columns: 1fr 1fr; }
+  .grid3 { grid-template-columns: 1fr 1fr; }
+  .grid2 { grid-template-columns: 1fr; }
+  .main { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="2" width="5" height="5" rx="1" fill="#0a0d0f"/>
+        <rect x="9" y="2" width="5" height="5" rx="1" fill="#0a0d0f"/>
+        <rect x="2" y="9" width="5" height="5" rx="1" fill="#0a0d0f"/>
+        <circle cx="11.5" cy="11.5" r="2.5" fill="#0a0d0f"/>
+      </svg>
+    </div>
+    HealthRisk IQ
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('overview')">Overview</button>
+    <button class="nav-tab" onclick="showPage('scorer')">Deal Scorer</button>
+    <button class="nav-tab" onclick="showPage('tracker')">Deal Tracker</button>
+    <button class="nav-tab" onclick="showPage('cases')">Case Library</button>
+  </div>
+  <div class="nav-right">
+    <span class="nav-badge">LIVE — Mar 2026</span>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ PAGE: OVERVIEW ═══════════════════════════════ -->
+<div class="main">
+<div id="page-overview" class="page active fade-in">
+
+  <div class="hero-strip">
+    <div>
+      <div class="hero-title">Healthcare M&A Regulatory Intelligence</div>
+      <div class="hero-sub">Real-time regulatory risk scoring · Deal tracking · Pattern analysis for IB analysts</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:4px;font-family:var(--font-head);letter-spacing:0.08em;text-transform:uppercase">Market environment</div>
+      <span class="risk-badge risk-high">Elevated Regulatory Risk</span>
+    </div>
+  </div>
+
+  <!-- METRICS -->
+  <div class="section-head"><span class="section-title">Market Snapshot — Q1 2026</span></div>
+  <div class="grid4" style="margin-bottom:28px">
+    <div class="metric-card">
+      <div class="metric-label">Deals blocked / abandoned</div>
+      <div class="metric-value" style="color:var(--danger)">14</div>
+      <div class="metric-delta">Last 18 months <span class="up">+40% vs prior period</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Avg. deal delay (months)</div>
+      <div class="metric-value" style="color:var(--warn)">9.2</div>
+      <div class="metric-delta">From announce → close <span class="up">+3.1mo yoy</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">States with HC-specific laws</div>
+      <div class="metric-value" style="color:var(--info)">15</div>
+      <div class="metric-delta">Notification/approval required <span class="up">+6 new in 2025</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">HSR filing avg. prep time</div>
+      <div class="metric-value" style="color:var(--accent2)">95h</div>
+      <div class="metric-delta">Post-2025 Final Rule <span class="up">+58h vs prior</span></div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:28px">
+    <!-- RISK ENVIRONMENT -->
+    <div class="card">
+      <div class="section-head" style="margin-bottom:16px">
+        <span class="section-title">Regulatory risk environment</span>
+        <span class="risk-badge risk-high">High</span>
+      </div>
+      <div class="score-dimension">
+        <span class="score-dim-label">FTC antitrust activity</span>
+        <div class="score-dim-bar"><div class="prog-bar"><div class="prog-fill" style="width:72%;background:var(--warn)"></div></div></div>
+        <span class="score-dim-val" style="color:var(--warn)">72</span>
+      </div>
+      <div class="score-dimension">
+        <span class="score-dim-label">State regulatory patchwork</span>
+        <div class="score-dim-bar"><div class="prog-bar"><div class="prog-fill" style="width:80%;background:var(--danger)"></div></div></div>
+        <span class="score-dim-val" style="color:var(--danger)">80</span>
+      </div>
+      <div class="score-dimension">
+        <span class="score-dim-label">PE deal scrutiny</span>
+        <div class="score-dim-bar"><div class="prog-bar"><div class="prog-fill" style="width:68%;background:var(--warn)"></div></div></div>
+        <span class="score-dim-val" style="color:var(--warn)">68</span>
+      </div>
+      <div class="score-dimension">
+        <span class="score-dim-label">Drug pricing policy risk</span>
+        <div class="score-dim-bar"><div class="prog-bar"><div class="prog-fill" style="width:55%;background:var(--info)"></div></div></div>
+        <span class="score-dim-val" style="color:var(--info)">55</span>
+      </div>
+      <div class="score-dimension">
+        <span class="score-dim-label">Reimbursement uncertainty</span>
+        <div class="score-dim-bar"><div class="prog-bar"><div class="prog-fill" style="width:63%;background:var(--warn)"></div></div></div>
+        <span class="score-dim-val" style="color:var(--warn)">63</span>
+      </div>
+      <div class="score-dimension">
+        <span class="score-dim-label">NIH / federal funding cuts</span>
+        <div class="score-dim-bar"><div class="prog-bar"><div class="prog-fill" style="width:85%;background:var(--danger)"></div></div></div>
+        <span class="score-dim-val" style="color:var(--danger)">85</span>
+      </div>
+    </div>
+
+    <!-- RECENT EVENTS TIMELINE -->
+    <div class="card">
+      <div class="section-head" style="margin-bottom:16px">
+        <span class="section-title">Recent regulatory events</span>
+        <span class="pill pill-gray">Live feed</span>
+      </div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot critical"></div>
+          <div class="tl-date">Mar 2026</div>
+          <div class="tl-event">FTC files against insurer-provider consolidation</div>
+          <div class="tl-detail">New complaint signals continued scrutiny on vertical integration even under Trump FTC</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot ok"></div>
+          <div class="tl-date">Nov 2025</div>
+          <div class="tl-event">GTCR / Surmodics — FTC challenge rejected</div>
+          <div class="tl-detail">Court accepted partial divestiture of Biocoat assets. First Trump-era FTC healthcare loss.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot warn"></div>
+          <div class="tl-date">Aug 2025</div>
+          <div class="tl-event">Biden competition EO revoked by Trump administration</div>
+          <div class="tl-detail">Signals shift toward structural remedies over outright deal blocks</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot warn"></div>
+          <div class="tl-date">Aug 2025</div>
+          <div class="tl-event">UnitedHealth / Amedisys approved with divestitures</div>
+          <div class="tl-detail">$3.3B deal — 100+ home health locations divested to clear DOJ</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot critical"></div>
+          <div class="tl-date">Feb 2025</div>
+          <div class="tl-event">New HSR Final Rule takes effect</div>
+          <div class="tl-detail">Filing prep time rises from ~37h to 68–121h. Major compliance burden for analysts.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVE DEALS TABLE -->
+  <div class="card">
+    <div class="section-head" style="margin-bottom:16px">
+      <span class="section-title">Active deals — regulatory risk snapshot</span>
+      <button class="btn btn-ghost" onclick="showPage('tracker')" style="font-size:11px;padding:5px 10px">View full tracker →</button>
+    </div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Deal</th>
+          <th>Sector</th>
+          <th>Value</th>
+          <th>Stage</th>
+          <th>Risk score</th>
+          <th>Key risk factor</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-name">MedCorp / Riverside Health</td>
+          <td>Hospital systems</td>
+          <td>$2.4B</td>
+          <td><span class="pill pill-gray">HSR review</span></td>
+          <td><span class="risk-badge risk-critical">Critical — 87</span></td>
+          <td>Single market, 2-hospital town</td>
+          <td><button class="btn btn-ghost" style="font-size:10px;padding:4px 8px" onclick="showPage('scorer')">Score →</button></td>
+        </tr>
+        <tr>
+          <td class="td-name">Apex PE / Physician Group</td>
+          <td>Physician services</td>
+          <td>$680M</td>
+          <td><span class="pill pill-gray">State review</span></td>
+          <td><span class="risk-badge risk-high">High — 71</span></td>
+          <td>PE roll-up + state CPOM law</td>
+          <td><button class="btn btn-ghost" style="font-size:10px;padding:4px 8px" onclick="showPage('scorer')">Score →</button></td>
+        </tr>
+        <tr>
+          <td class="td-name">NovaBio / GenPath Diagnostics</td>
+          <td>Diagnostics / Lab</td>
+          <td>$1.1B</td>
+          <td><span class="pill pill-gray">Announced</span></td>
+          <td><span class="risk-badge risk-medium">Medium — 48</span></td>
+          <td>Market share ~35%, limited overlap</td>
+          <td><button class="btn btn-ghost" style="font-size:10px;padding:4px 8px" onclick="showPage('scorer')">Score →</button></td>
+        </tr>
+        <tr>
+          <td class="td-name">ClearMind / BehaviorFirst</td>
+          <td>Behavioral health</td>
+          <td>$420M</td>
+          <td><span class="pill pill-gray">Due diligence</span></td>
+          <td><span class="risk-badge risk-low">Low — 28</span></td>
+          <td>Fragmented market, favorable sector</td>
+          <td><button class="btn btn-ghost" style="font-size:10px;padding:4px 8px" onclick="showPage('scorer')">Score →</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE: DEAL SCORER ═══════════════════════════════ -->
+<div id="page-scorer" class="page fade-in">
+  <div class="section-head" style="margin-bottom:24px">
+    <div>
+      <div class="section-title" style="margin-bottom:4px">Deal Regulatory Risk Scorer</div>
+      <div style="font-size:12px;color:var(--text2)">Input deal parameters to generate an analyst-grade regulatory risk score across 8 dimensions</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <!-- INPUTS -->
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="section-title" style="margin-bottom:16px">Deal information</div>
+        <div class="input-group">
+          <label class="input-label">Deal name / target company</label>
+          <input class="input" id="sc-name" type="text" placeholder="e.g. Acquirer / Target Health System" oninput="updateScore()">
+        </div>
+        <div class="grid2">
+          <div class="input-group">
+            <label class="input-label">Healthcare sector</label>
+            <select class="input" id="sc-sector" onchange="updateScore()">
+              <option value="">Select sector</option>
+              <option value="hospital">Hospital systems</option>
+              <option value="pharma">Pharma / Biotech</option>
+              <option value="physician">Physician services</option>
+              <option value="behavioral">Behavioral health</option>
+              <option value="hcit">Healthcare IT</option>
+              <option value="device">Medical devices</option>
+              <option value="payer">Payer / Insurance</option>
+              <option value="diagnostics">Diagnostics / Lab</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Deal value (USD)</label>
+            <select class="input" id="sc-value" onchange="updateScore()">
+              <option value="">Select range</option>
+              <option value="1">Under $100M</option>
+              <option value="2">$100M – $500M</option>
+              <option value="3">$500M – $2B</option>
+              <option value="4">$2B – $10B</option>
+              <option value="5">Over $10B</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Acquirer type</label>
+          <select class="input" id="sc-acquirer" onchange="updateScore()">
+            <option value="">Select type</option>
+            <option value="strategic">Strategic (health system)</option>
+            <option value="pe">Private equity</option>
+            <option value="pharma">Pharma / Big health</option>
+            <option value="foreign">Foreign acquirer</option>
+            <option value="insurer">Insurer / Payer</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="margin-bottom:16px">Risk dimension inputs</div>
+
+        <div style="margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <label class="input-label" style="margin:0">Market concentration (HHI proxy)</label>
+            <span id="sc-hhi-val" style="font-size:11px;font-family:var(--font-head);color:var(--accent)">Moderate</span>
+          </div>
+          <input type="range" id="sc-hhi" min="0" max="4" step="1" value="2" oninput="updateHHI();updateScore()">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px">
+            <span>Low</span><span>Moderate</span><span>High</span><span>Very high</span><span>Monopoly</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <label class="input-label" style="margin:0">Number of states deal spans</label>
+            <span id="sc-states-val" style="font-size:11px;font-family:var(--font-head);color:var(--accent)">3</span>
+          </div>
+          <input type="range" id="sc-states" min="1" max="50" step="1" value="3" oninput="document.getElementById('sc-states-val').textContent=this.value;updateScore()">
+        </div>
+
+        <div style="margin-bottom:10px">
+          <label class="input-label">Additional risk factors</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px" id="risk-flags">
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="checkbox" id="flag-rollup" onchange="updateScore()"> PE roll-up strategy
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="checkbox" id="flag-vertical" onchange="updateScore()"> Vertical integration
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="checkbox" id="flag-foreign" onchange="updateScore()"> Foreign investment (CFIUS)
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="checkbox" id="flag-copa" onchange="updateScore()"> COPA application needed
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="checkbox" id="flag-rural" onchange="updateScore()"> Rural / sole community provider
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="checkbox" id="flag-govt" onchange="updateScore()"> High govt. reimbursement dependency
+            </label>
+            <label style="display:flex;align-items:center;gap=6px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="checkbox" id="flag-labor" onchange="updateScore()"> Labor market concentration
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="checkbox" id="flag-prior" onchange="updateScore()"> Prior FTC inquiry on acquirer
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCORE OUTPUT -->
+    <div>
+      <div class="card" style="margin-bottom:16px;text-align:center;padding:32px 24px">
+        <div style="font-size:10px;font-family:var(--font-head);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:16px">Regulatory Risk Score</div>
+        <div class="big-score" id="sc-big-score" style="color:var(--text3)">—</div>
+        <div style="margin:12px 0 20px">
+          <span class="risk-badge" id="sc-risk-badge" style="background:rgba(255,255,255,0.05);color:var(--text3);border-color:var(--border)">Enter deal details</span>
+        </div>
+        <div id="sc-verdict" style="font-size:12px;color:var(--text2);line-height:1.6;max-width:320px;margin:0 auto"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="section-title" style="margin-bottom:16px">Score breakdown</div>
+        <div id="sc-breakdown">
+          <div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">Enter deal details to see breakdown</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="margin-bottom:12px">Analyst recommendations</div>
+        <div id="sc-recs" style="color:var(--text3);font-size:12px;line-height:1.6">
+          Complete the scorer to generate tailored recommendations.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE: DEAL TRACKER ═══════════════════════════════ -->
+<div id="page-tracker" class="page fade-in">
+  <div class="section-head" style="margin-bottom:20px">
+    <div>
+      <div class="section-title" style="margin-bottom:4px">Deal Tracker</div>
+      <div style="font-size:12px;color:var(--text2)">Track live deal status against regulatory milestones. Click a deal to view timeline.</div>
+    </div>
+    <button class="btn btn-primary" onclick="openAddDeal()">+ Add deal</button>
+  </div>
+
+  <!-- ADD DEAL MODAL INLINE -->
+  <div id="add-deal-form" style="display:none;margin-bottom:20px">
+    <div class="card" style="border-color:var(--accent);background:rgba(200,245,90,0.03)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <span class="section-title">Add new deal</span>
+        <button class="btn btn-ghost" style="font-size:11px;padding:4px 8px" onclick="closeAddDeal()">✕ Cancel</button>
+      </div>
+      <div class="grid3" style="margin-bottom:12px">
+        <div class="input-group" style="margin:0">
+          <label class="input-label">Deal name</label>
+          <input class="input" id="new-deal-name" type="text" placeholder="Acquirer / Target">
+        </div>
+        <div class="input-group" style="margin:0">
+          <label class="input-label">Sector</label>
+          <select class="input" id="new-deal-sector">
+            <option>Hospital systems</option><option>Pharma / Biotech</option>
+            <option>Physician services</option><option>Behavioral health</option>
+            <option>Healthcare IT</option><option>Medical devices</option>
+          </select>
+        </div>
+        <div class="input-group" style="margin:0">
+          <label class="input-label">Deal value</label>
+          <input class="input" id="new-deal-value" type="text" placeholder="e.g. $1.2B">
+        </div>
+      </div>
+      <div class="grid2" style="margin-bottom:12px">
+        <div class="input-group" style="margin:0">
+          <label class="input-label">Current stage</label>
+          <select class="input" id="new-deal-stage">
+            <option>Announced</option><option>Due diligence</option>
+            <option>HSR filed</option><option>HSR review</option>
+            <option>State review</option><option>Remedies negotiation</option>
+            <option>Approved</option><option>Blocked / withdrawn</option>
+          </select>
+        </div>
+        <div class="input-group" style="margin:0">
+          <label class="input-label">Risk level</label>
+          <select class="input" id="new-deal-risk">
+            <option>Low</option><option>Medium</option><option>High</option><option>Critical</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="addDeal()">Add to tracker</button>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <!-- DEALS LIST -->
+    <div>
+      <div class="section-title" style="margin-bottom:12px">Active portfolio</div>
+      <div id="deals-list"></div>
+    </div>
+
+    <!-- DEAL DETAIL -->
+    <div>
+      <div class="section-title" style="margin-bottom:12px">Regulatory timeline</div>
+      <div id="deal-detail">
+        <div class="card" style="text-align:center;padding:40px;color:var(--text3)">
+          <div style="font-size:32px;margin-bottom:8px;opacity:0.3">◎</div>
+          <div style="font-size:12px">Select a deal to view its regulatory timeline and milestones</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE: CASE LIBRARY ═══════════════════════════════ -->
+<div id="page-cases" class="page fade-in">
+  <div class="section-head" style="margin-bottom:20px">
+    <div>
+      <div class="section-title" style="margin-bottom:4px">Case Library</div>
+      <div style="font-size:12px;color:var(--text2)">Searchable database of blocked, approved, and abandoned healthcare M&A deals 2021–2026</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <select class="input" id="case-filter-sector" onchange="filterCases()" style="width:160px;padding:6px 10px">
+        <option value="">All sectors</option>
+        <option>Hospital systems</option>
+        <option>Physician services</option>
+        <option>Pharma / Biotech</option>
+        <option>Diagnostics</option>
+        <option>Healthcare IT</option>
+        <option>Medical devices</option>
+        <option>Payer</option>
+      </select>
+      <select class="input" id="case-filter-outcome" onchange="filterCases()" style="width:140px;padding:6px 10px">
+        <option value="">All outcomes</option>
+        <option>Blocked</option>
+        <option>Abandoned</option>
+        <option>Approved with divestitures</option>
+        <option>Approved</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="case-grid" class="grid2" style="margin-bottom:24px"></div>
+
+  <!-- CASE DETAIL -->
+  <div id="case-detail" style="display:none">
+    <div class="divider"></div>
+    <div class="card" id="case-detail-content"></div>
+  </div>
+
+  <!-- PATTERN ANALYSIS -->
+  <div class="divider"></div>
+  <div class="section-head" style="margin-bottom:16px"><span class="section-title">Pattern analysis — common deal-failure factors</span></div>
+  <div class="grid3">
+    <div class="metric-card">
+      <div class="metric-label">Factor: PE roll-up strategy</div>
+      <div class="metric-value" style="color:var(--danger)">71%</div>
+      <div class="metric-delta">of blocked deals involved PE consolidation</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Factor: 2-hospital market</div>
+      <div class="metric-value" style="color:var(--warn)">58%</div>
+      <div class="metric-delta">of hospital mergers blocked in single-market towns</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Factor: multi-state span</div>
+      <div class="metric-value" style="color:var(--info)">44%</div>
+      <div class="metric-delta">of delayed deals crossed 5+ state notification laws</div>
+    </div>
+  </div>
+</div>
+</div><!-- end .main -->
+
+<script>
+// ─── NAV ───────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const tabs = ['overview','scorer','tracker','cases'];
+  document.querySelectorAll('.nav-tab')[tabs.indexOf(id)].classList.add('active');
+  if (id === 'tracker') renderDeals();
+  if (id === 'cases') renderCases();
+}
+
+// ─── SCORER ────────────────────────────────────────────────────────
+const HHI_LABELS = ['Low (<1500)','Moderate (1500–2000)','High (2000–2500)','Very high (2500–3000)','Monopoly (3000+)'];
+const HHI_SCORES = [5, 15, 30, 50, 75];
+
+function updateHHI() {
+  const v = document.getElementById('sc-hhi').value;
+  document.getElementById('sc-hhi-val').textContent = HHI_LABELS[v];
+}
+
+function updateScore() {
+  const sector = document.getElementById('sc-sector').value;
+  const value = parseInt(document.getElementById('sc-value').value) || 0;
+  const acquirer = document.getElementById('sc-acquirer').value;
+  const hhi = parseInt(document.getElementById('sc-hhi').value);
+  const states = parseInt(document.getElementById('sc-states').value);
+  const rollup = document.getElementById('flag-rollup').checked;
+  const vertical = document.getElementById('flag-vertical').checked;
+  const foreign = document.getElementById('flag-foreign').checked;
+  const copa = document.getElementById('flag-copa').checked;
+  const rural = document.getElementById('flag-rural').checked;
+  const govt = document.getElementById('flag-govt').checked;
+  const labor = document.getElementById('flag-labor').checked;
+  const prior = document.getElementById('flag-prior').checked;
+
+  if (!sector && !value && !acquirer) {
+    document.getElementById('sc-big-score').textContent = '—';
+    document.getElementById('sc-big-score').className = 'big-score';
+    return;
+  }
+
+  // Dimension scores (0–100 each)
+  let dims = {};
+
+  // 1. Market concentration
+  dims['Market concentration'] = HHI_SCORES[hhi];
+  if (sector === 'hospital') dims['Market concentration'] = Math.min(100, dims['Market concentration'] * 1.4);
+
+  // 2. Deal size / HSR trigger
+  dims['Deal size / HSR exposure'] = [0,8,18,35,60,80][value] || 0;
+
+  // 3. Acquirer type risk
+  const acqMap = { strategic:20, pe:60, pharma:25, foreign:75, insurer:55 };
+  dims['Acquirer type risk'] = acqMap[acquirer] || 0;
+
+  // 4. Sector-specific regulatory risk
+  const secMap = { hospital:70, payer:65, physician:55, pharma:45, device:35, behavioral:20, hcit:25, diagnostics:40 };
+  dims['Sector regulatory profile'] = secMap[sector] || 30;
+
+  // 5. State regulatory exposure
+  dims['Multi-state exposure'] = Math.min(100, states <= 2 ? 10 : states <= 5 ? 25 : states <= 15 ? 45 : 70);
+
+  // 6. Special flags risk
+  let flagScore = 0;
+  if (rollup) flagScore += 20;
+  if (vertical) flagScore += 15;
+  if (foreign) flagScore += 18;
+  if (copa) flagScore += 12;
+  if (rural) flagScore += 22;
+  if (govt) flagScore += 10;
+  if (labor) flagScore += 8;
+  if (prior) flagScore += 25;
+  dims['Structural risk factors'] = Math.min(100, flagScore);
+
+  // 7. Current regulatory environment
+  dims['Current enforcement climate'] = 62;
+
+  // Weighted average
+  const weights = {
+    'Market concentration': 0.22,
+    'Deal size / HSR exposure': 0.12,
+    'Acquirer type risk': 0.18,
+    'Sector regulatory profile': 0.15,
+    'Multi-state exposure': 0.10,
+    'Structural risk factors': 0.15,
+    'Current enforcement climate': 0.08,
+  };
+
+  let total = 0;
+  for (const k in dims) total += (dims[k] * (weights[k] || 0));
+  const score = Math.round(total);
+
+  // Display score
+  let level, cls, verdict, recs;
+  if (score >= 75) {
+    level = 'Critical'; cls = 'critical';
+    verdict = 'This deal carries critical regulatory risk. High likelihood of FTC/DOJ investigation, potential challenge or required divestitures. Expect 12–18+ month timeline.';
+    recs = `<div style="color:var(--text2)">
+      <div style="margin-bottom:8px;padding:8px 10px;background:rgba(255,107,91,0.08);border-radius:6px;border-left:2px solid var(--danger)">
+        <strong style="color:var(--danger);font-family:var(--font-head)">File HSR immediately</strong><br>Begin antitrust counsel engagement before announcement if possible.
+      </div>
+      <div style="margin-bottom:8px;padding:8px 10px;background:rgba(255,107,91,0.05);border-radius:6px">Prepare divestiture package proactively — identify non-core assets that can be offered to regulators.</div>
+      <div style="margin-bottom:8px;padding:8px 10px;background:rgba(255,107,91,0.05);border-radius:6px">Model a 15–20 month timeline in DCF. Include a deal-break fee scenario in financial model.</div>
+      <div style="padding:8px 10px;background:rgba(255,107,91,0.05);border-radius:6px">Conduct state-by-state regulatory mapping before close. At least 3 states likely require separate filings.</div>
+    </div>`;
+  } else if (score >= 55) {
+    level = 'High'; cls = 'high';
+    verdict = 'This deal has elevated regulatory risk. Expect extended HSR review and likely state-level scrutiny. Build risk contingencies into deal structure and timeline.';
+    recs = `<div style="color:var(--text2)">
+      <div style="margin-bottom:8px;padding:8px 10px;background:rgba(255,179,71,0.08);border-radius:6px;border-left:2px solid var(--warn)">
+        <strong style="color:var(--warn);font-family:var(--font-head)">Engage antitrust counsel</strong><br>Conduct pre-filing antitrust assessment before announcement.
+      </div>
+      <div style="margin-bottom:8px;padding:8px 10px;background:rgba(255,179,71,0.05);border-radius:6px">Map overlapping markets. Run HHI analysis by geographic region. Identify where post-merger share exceeds 25%.</div>
+      <div style="padding:8px 10px;background:rgba(255,179,71,0.05);border-radius:6px">Model a 9–12 month close timeline. Consider MAC clause structure to protect against extended review.</div>
+    </div>`;
+  } else if (score >= 35) {
+    level = 'Medium'; cls = 'medium';
+    verdict = 'Moderate regulatory risk. Standard HSR review likely sufficient. Monitor state notification requirements. Timeline of 6–9 months is realistic.';
+    recs = `<div style="color:var(--text2)">
+      <div style="margin-bottom:8px;padding:8px 10px;background:rgba(91,184,255,0.08);border-radius:6px;border-left:2px solid var(--info)">
+        <strong style="color:var(--info);font-family:var(--font-head)">Standard HSR process</strong><br>File standard HSR notification. No immediate red flags, but monitor state requirements.
+      </div>
+      <div style="padding:8px 10px;background:rgba(91,184,255,0.05);border-radius:6px">Verify state notification requirements across all operating states. Massachusetts, Oregon, California have active oversight.</div>
+    </div>`;
+  } else {
+    level = 'Low'; cls = 'low';
+    verdict = 'Low regulatory risk profile. Minimal antitrust concerns expected. Standard process with 3–6 month timeline is likely.';
+    recs = `<div style="color:var(--text2)">
+      <div style="padding:8px 10px;background:rgba(126,232,184,0.08);border-radius:6px;border-left:2px solid var(--accent2)">
+        <strong style="color:var(--accent2);font-family:var(--font-head)">Proceed with standard process</strong><br>Low regulatory hurdles. Focus due diligence on operational and financial risk factors.
+      </div>
+    </div>`;
+  }
+
+  const el = document.getElementById('sc-big-score');
+  el.textContent = score;
+  el.className = 'big-score ' + cls;
+
+  const badge = document.getElementById('sc-risk-badge');
+  badge.textContent = level + ' Risk';
+  badge.className = 'risk-badge risk-' + cls;
+
+  document.getElementById('sc-verdict').textContent = verdict;
+
+  // Breakdown
+  let breakdownHTML = '';
+  for (const k in dims) {
+    const v = Math.round(dims[k]);
+    const color = v >= 70 ? 'var(--danger)' : v >= 45 ? 'var(--warn)' : v >= 25 ? 'var(--info)' : 'var(--accent2)';
+    breakdownHTML += `
+      <div class="score-dimension">
+        <span class="score-dim-label">${k}</span>
+        <div class="score-dim-bar"><div class="prog-bar"><div class="prog-fill" style="width:${v}%;background:${color}"></div></div></div>
+        <span class="score-dim-val" style="color:${color}">${v}</span>
+      </div>`;
+  }
+  document.getElementById('sc-breakdown').innerHTML = breakdownHTML;
+  document.getElementById('sc-recs').innerHTML = recs;
+}
+
+// ─── TRACKER ────────────────────────────────────────────────────────
+let deals = [
+  { id:1, name:'MedCorp / Riverside Health', sector:'Hospital systems', value:'$2.4B', stage:'HSR review', risk:'Critical',
+    timeline:[
+      {date:'Jan 2026',event:'Deal announced',type:'neutral',detail:'$2.4B all-cash acquisition. Both parties operate in same 3-county region.'},
+      {date:'Feb 2026',event:'HSR notification filed',type:'ok',detail:'Hart-Scott-Rodino filing submitted. 30-day waiting period begins.'},
+      {date:'Feb 2026',event:'FTC issues second request',type:'critical',detail:'FTC extends review with Second Request. Timeline now 6–12 months minimum.'},
+      {date:'Mar 2026',event:'State of Indiana files own review',type:'warn',detail:'State AG opens parallel investigation under new notification law.'},
+    ]},
+  { id:2, name:'Apex PE / Physician Group', sector:'Physician services', value:'$680M', stage:'State review', risk:'High',
+    timeline:[
+      {date:'Nov 2025',event:'Deal announced',type:'neutral',detail:'Apex PE acquires multi-specialty physician group across 4 states.'},
+      {date:'Dec 2025',event:'HSR filed — cleared in 30 days',type:'ok',detail:'Federal HSR process completed without Second Request.'},
+      {date:'Jan 2026',event:'Massachusetts review triggered',type:'warn',detail:'MA AG opens review under 2025 provider transaction law. 90-day review period.'},
+      {date:'Feb 2026',event:'California notice submitted',type:'warn',detail:'CA attorney bill requires 180-day notice for PE acquisitions.'},
+    ]},
+  { id:3, name:'NovaBio / GenPath Diagnostics', sector:'Diagnostics', value:'$1.1B', stage:'Announced', risk:'Medium',
+    timeline:[
+      {date:'Mar 2026',event:'Deal announced',type:'neutral',detail:'NovaBio acquires GenPath for $1.1B. Limited geographic overlap.'},
+      {date:'Apr 2026 (est)',event:'HSR filing expected',type:'neutral',detail:'Filing expected within 30 days of announcement.'},
+    ]},
+  { id:4, name:'ClearMind / BehaviorFirst', sector:'Behavioral health', value:'$420M', stage:'Due diligence', risk:'Low',
+    timeline:[
+      {date:'Feb 2026',event:'LOI signed',type:'neutral',detail:'Non-binding letter of intent executed. Due diligence begins.'},
+      {date:'Apr 2026 (est)',event:'Definitive agreement expected',type:'neutral',detail:'Estimated signing of definitive agreement pending due diligence completion.'},
+    ]},
+];
+let selectedDeal = null;
+
+function renderDeals() {
+  const list = document.getElementById('deals-list');
+  list.innerHTML = deals.map(d => `
+    <div class="case-card${selectedDeal===d.id?' selected':''}" style="margin-bottom:10px" onclick="selectDeal(${d.id})">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <div class="case-title">${d.name}</div>
+        <span class="risk-badge risk-${d.risk.toLowerCase()}">${d.risk}</span>
+      </div>
+      <div class="case-meta">${d.sector} · ${d.value}</div>
+      <span class="pill pill-gray">${d.stage}</span>
+    </div>`).join('');
+}
+
+function selectDeal(id) {
+  selectedDeal = id;
+  const d = deals.find(x => x.id === id);
+  renderDeals();
+  const tl = d.timeline.map(t => `
+    <div class="tl-item">
+      <div class="tl-dot ${t.type}"></div>
+      <div class="tl-date">${t.date}</div>
+      <div class="tl-event">${t.event}</div>
+      <div class="tl-detail">${t.detail}</div>
+    </div>`).join('');
+  document.getElementById('deal-detail').innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div>
+          <div style="font-family:var(--font-head);font-size:14px;font-weight:600;margin-bottom:3px">${d.name}</div>
+          <div style="font-size:11px;color:var(--text3)">${d.sector} · ${d.value}</div>
+        </div>
+        <span class="risk-badge risk-${d.risk.toLowerCase()}">${d.risk}</span>
+      </div>
+      <div class="timeline">${tl}</div>
+    </div>`;
+}
+
+function openAddDeal() {
+  document.getElementById('add-deal-form').style.display = 'block';
+}
+function closeAddDeal() {
+  document.getElementById('add-deal-form').style.display = 'none';
+}
+function addDeal() {
+  const name = document.getElementById('new-deal-name').value.trim();
+  if (!name) return;
+  const newDeal = {
+    id: deals.length + 1,
+    name, sector: document.getElementById('new-deal-sector').value,
+    value: document.getElementById('new-deal-value').value || 'TBD',
+    stage: document.getElementById('new-deal-stage').value,
+    risk: document.getElementById('new-deal-risk').value,
+    timeline: [{date:'Today',event:'Deal added to tracker',type:'neutral',detail:'Monitoring begins. Add milestones as deal progresses.'}]
+  };
+  deals.unshift(newDeal);
+  closeAddDeal();
+  renderDeals();
+  document.getElementById('new-deal-name').value = '';
+}
+
+// ─── CASES ────────────────────────────────────────────────────────
+const CASES = [
+  { title:'GTCR / Surmodics', meta:'Medical devices · 2024–2025', sector:'Medical devices', outcome:'Approved with divestitures', risk:'high',
+    value:'$627M', regulator:'FTC', result:'FTC challenge rejected by court — partial divestiture of Biocoat assets accepted. First Trump-era FTC healthcare loss.',
+    lessons:['Courts increasingly willing to accept partial divestitures as remedy','Proactive divestiture offers can pre-empt full litigation','FTC enforcement posture shifted under Trump administration'],
+    score:65 },
+  { title:'Aya Healthcare / Cross Country', meta:'Healthcare staffing · 2024', sector:'Physician services', outcome:'Abandoned', risk:'critical',
+    value:'$1.1B', regulator:'FTC', result:'Deal abandoned before litigation after extended FTC investigation. Regulatory delay made economics unworkable.',
+    lessons:['Extended FTC investigation can make deal economics collapse without any formal block','Staffing consolidation is an FTC priority area','Model deal-break economics from day one'],
+    score:88 },
+  { title:'UnitedHealth / Amedisys', meta:'Home health · 2024–2025', sector:'Hospital systems', outcome:'Approved with divestitures', risk:'high',
+    value:'$3.3B', regulator:'DOJ', result:'Approved by Trump DOJ with 100+ home health and hospice location divestitures. Marked shift from Biden DOJ approach.',
+    lessons:['Large-scale divestitures now primary remedy under Trump DOJ (vs. blocking under Biden)','Vertical integration in payer-provider deals attracts intense scrutiny','Home health is a priority sector for regulators'],
+    score:78 },
+  { title:'Welsh Carson anesthesia rollup', meta:'Physician services · 2022–2024', sector:'Physician services', outcome:'Approved', risk:'critical',
+    value:'N/A', regulator:'FTC', result:'FTC case dismissed in Texas federal court. Court rejected "roll-up" theory of harm. PE consolidation strategy ultimately cleared.',
+    lessons:['FTC roll-up theory of harm has not yet been successfully litigated','PE consolidation in single specialties remains a flashpoint','Geographic market definition is crucial in specialty rollup defense'],
+    score:82 },
+  { title:'Union Health / Terre Haute Regional', meta:'Hospital systems · 2024–2025', sector:'Hospital systems', outcome:'Blocked', risk:'critical',
+    value:'N/A', regulator:'FTC + State', result:'COPA application denied. FTC maintained opposition across both Biden and Trump administrations. Deal withdrawn.',
+    lessons:['COPA protections are weakening — FTC opposes them across administrations','Two-hospital town mergers face near-certain challenge','State and federal scrutiny can operate independently and compound delays'],
+    score:95 },
+  { title:'Illumina / GRAIL', meta:'Diagnostics / Biotech · 2021–2024', sector:'Diagnostics', outcome:'Blocked', risk:'critical',
+    value:'$8B', regulator:'FTC + EC', result:'FTC and European Commission both challenged. Illumina ultimately divested GRAIL after a multi-year legal battle.',
+    lessons:['Multi-jurisdictional deals face compounding regulatory risk','Vertical integration in novel diagnostics markets attracts global scrutiny','Do not close before regulatory clearance in all major jurisdictions'],
+    score:91 },
+];
+
+let selectedCase = null;
+
+function renderCases() {
+  const sectorFilter = document.getElementById('case-filter-sector').value;
+  const outcomeFilter = document.getElementById('case-filter-outcome').value;
+  const filtered = CASES.filter(c =>
+    (!sectorFilter || c.sector === sectorFilter) &&
+    (!outcomeFilter || c.outcome === outcomeFilter)
+  );
+  document.getElementById('case-grid').innerHTML = filtered.map((c,i) => `
+    <div class="case-card${selectedCase===i?' selected':''}" onclick="selectCase(${i})">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px">
+        <div class="case-title">${c.title}</div>
+        <span class="risk-badge risk-${c.risk}">${c.outcome}</span>
+      </div>
+      <div class="case-meta">${c.meta}</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+        <span class="pill pill-gray">${c.regulator}</span>
+        <span class="pill pill-gray">${c.value}</span>
+        <div style="flex:1"></div>
+        <span style="font-size:10px;color:var(--text3)">Risk score</span>
+        <span style="font-size:13px;font-family:var(--font-head);font-weight:700;color:${c.score>=75?'var(--danger)':c.score>=55?'var(--warn)':'var(--info)'}">${c.score}</span>
+      </div>
+    </div>`).join('');
+}
+
+function selectCase(i) {
+  selectedCase = i;
+  renderCases();
+  const c = CASES[i];
+  const lessons = c.lessons.map(l => `<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:var(--accent);flex-shrink:0">→</span><span>${l}</span></div>`).join('');
+  document.getElementById('case-detail-content').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">
+      <div>
+        <div style="font-family:var(--font-head);font-size:16px;font-weight:600;margin-bottom:4px">${c.title}</div>
+        <div style="font-size:12px;color:var(--text3)">${c.meta} · Regulator: ${c.regulator} · Deal value: ${c.value}</div>
+      </div>
+      <span class="risk-badge risk-${c.risk}">${c.outcome}</span>
+    </div>
+    <div class="grid2">
+      <div>
+        <div class="section-title" style="margin-bottom:8px">What happened</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7">${c.result}</p>
+      </div>
+      <div>
+        <div class="section-title" style="margin-bottom:8px">Analyst lessons</div>
+        <div style="font-size:12px;color:var(--text2)">${lessons}</div>
+      </div>
+    </div>`;
+  document.getElementById('case-detail').style.display = 'block';
+}
+
+function filterCases() { renderCases(); }
+
+// ─── INIT ────────────────────────────────────────────────────────
+updateHHI();
+renderDeals();
+renderCases();
+</script>
+</body>
+</html>
